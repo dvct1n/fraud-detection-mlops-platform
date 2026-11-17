@@ -87,4 +87,8 @@ def create_synthetic_transactions(output_path: str = "data/raw/sample_transactio
 
 if __name__ == "__main__":
     sample_csv = create_synthetic_transactions()
-    run_training_pipeline(config_path="config/config.yaml", data_override=sample_csv)
+    run_training_pipeline(
+    config_path="config/config.yaml",
+    train_override=sample_csv,
+    test_override=sample_csv,
+)
