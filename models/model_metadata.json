@@ -1,0 +1,85 @@
+{
+  "best_model_name": "Baseline_LogisticRegression",
+  "requires_scaling": true,
+  "metrics": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "roc_auc": 1.0
+  },
+  "feature_order": [
+    "merchant",
+    "category",
+    "amt",
+    "gender",
+    "city_pop",
+    "job",
+    "age",
+    "age_group",
+    "day",
+    "month",
+    "year",
+    "hour",
+    "minute",
+    "distance_km",
+    "distance_group"
+  ],
+  "categorical_columns": [
+    "merchant",
+    "category",
+    "gender",
+    "job",
+    "age_group",
+    "distance_group"
+  ],
+  "numerical_columns": [
+    "amt",
+    "city_pop",
+    "age",
+    "day",
+    "month",
+    "year",
+    "hour",
+    "minute",
+    "distance_km"
+  ],
+  "benchmark_table": [
+    {
+      "Model": "Baseline_LogisticRegression",
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1-Score": 1.0,
+      "ROC-AUC": 1.0,
+      "Accuracy": 1.0,
+      "TP": 39,
+      "FP": 0,
+      "FN": 0,
+      "TN": 961
+    },
+    {
+      "Model": "RandomForest_Balanced",
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1-Score": 1.0,
+      "ROC-AUC": 1.0,
+      "Accuracy": 1.0,
+      "TP": 39,
+      "FP": 0,
+      "FN": 0,
+      "TN": 961
+    },
+    {
+      "Model": "HistGradientBoosting",
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1-Score": 1.0,
+      "ROC-AUC": 1.0,
+      "Accuracy": 1.0,
+      "TP": 39,
+      "FP": 0,
+      "FN": 0,
+      "TN": 961
+    }
+  ]
+}

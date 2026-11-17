@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+data/raw/*.csv
+!data/raw/sample_transactions.csv
+mlruns/
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
+.env
+*.log
