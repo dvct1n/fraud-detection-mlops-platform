@@ -51,6 +51,7 @@ def _load_and_sample(csv_path: str, sample_frac: float, target_col: str, random_
 
 def run_training_pipeline(
     config_path: str = "config/config.yaml",
+    data_override=None,
     train_override: Optional[str] = None,
     test_override: Optional[str] = None,
 ):
