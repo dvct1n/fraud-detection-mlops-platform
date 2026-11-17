@@ -1,5 +1,7 @@
 # Real-Time Fraud Detection & MLOps Platform
 
+[![MLOps CI Pipeline](https://github.com/dvct1n/fraud-detection-mlops-platform/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dvct1n/fraud-detection-mlops-platform/actions/workflows/ci.yml)
+
 An end-to-end machine learning engineering platform designed to detect fraudulent credit card transactions on highly imbalanced financial datasets. The system encompasses automated spatial-temporal feature engineering, multi-algorithm benchmarking with **MLflow** experiment tracking, low-latency REST inference via **FastAPI**, and containerized deployment using **Docker**.
 
 ---
@@ -23,11 +25,11 @@ An end-to-end machine learning engineering platform designed to detect fraudulen
 
 ## Key Capabilities
 
-* **Spatial & Temporal Feature Engineering:** Computes great-circle distance (`distance_km`) between cardholder coordinates and merchant locations via the Haversine formula, demographic age segmentation (`age_group`), distance bucketing (`distance_group`), and cyclical transaction timestamps.
-* **Imbalanced Classification Pipeline:** Handles severe class imbalance (<1% positive fraud rate) using cost-sensitive learning (`scale_pos_weight` in XGBoost and `class_weight='balanced'` in LightGBM and Logistic Regression) combined with stratified partitioning.
-* **Experiment Tracking & Versioning:** Logs hyperparameters, evaluation metrics (`Precision`, `Recall`, `F1-Score`, `ROC-AUC`), and serialized model artifacts into **MLflow**.
-* **Real-Time Inference Service:** Exposes `/predict`, `/predict/batch`, `/model/info`, and `/health` REST endpoints powered by **FastAPI** and **Pydantic v2** schema validation.
-* **Production Containerization:** Packaged with a multi-layer `Dockerfile` and `docker-compose.yml` orchestrating both the inference service and an MLflow tracking server.
+- **Spatial & Temporal Feature Engineering:** Computes great-circle distance (`distance_km`) between cardholder coordinates and merchant locations via the Haversine formula, demographic age segmentation (`age_group`), distance bucketing (`distance_group`), and cyclical transaction timestamps.
+- **Imbalanced Classification Pipeline:** Handles severe class imbalance (<1% positive fraud rate) using cost-sensitive learning (`scale_pos_weight` in XGBoost and `class_weight='balanced'` in LightGBM and Logistic Regression) combined with stratified partitioning.
+- **Experiment Tracking & Versioning:** Logs hyperparameters, evaluation metrics (`Precision`, `Recall`, `F1-Score`, `ROC-AUC`), and serialized model artifacts into **MLflow**.
+- **Real-Time Inference Service:** Exposes `/predict`, `/predict/batch`, `/model/info`, and `/health` REST endpoints powered by **FastAPI** and **Pydantic v2** schema validation.
+- **Production Containerization:** Packaged with a multi-layer `Dockerfile` and `docker-compose.yml` orchestrating both the inference service and an MLflow tracking server.
 
 ---
 
@@ -77,32 +79,54 @@ fraud-detection-mlops-platform/
 ## Quickstart Guide
 
 ### 1. Environment Setup
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 2. Model Training & MLflow Tracking
-To train on the full Kaggle Fraud Detection dataset, place `fraudTrain.csv` inside `data/raw/` and execute:
+### 2. Get the Dataset & Train the Model
+
+The real dataset is **not** stored in this repository because of its size. Download it manually:
+
+1. Download the **Credit Card Transactions Fraud Detection Dataset** from Kaggle (search for `kartik2112/fraud-detection`).
+2. Extract and place both files inside `data/raw/`:
+   ```text
+   data/raw/fraudTrain.csv
+   data/raw/fraudTest.csv
+   ```
+3. Train all models and save the best one to `models/`:
+   ```bash
+   PYTHONPATH=. python -m src.models.train
+   ```
+   (Windows PowerShell: `$env:PYTHONPATH="."; python -m src.models.train`)
+
+By default, the paths are read from `config/config.yaml`. To use custom files:
+
 ```bash
-PYTHONPATH=. python -m src.models.train --config config/config.yaml --data data/raw/fraudTrain.csv
+PYTHONPATH=. python -m src.models.train --train path/to/train.csv --test path/to/test.csv
 ```
-*(Note: Pre-trained artifacts generated from `scripts/generate_demo_artifacts.py` are already included in `models/` so the API can be launched immediately).*
+
+_(Note: Demo artifacts built from synthetic data by `scripts/generate_demo_artifacts.py` are included in `models/`, so the API can be launched immediately without the dataset. Metrics from these demo models are not meaningful.)_
 
 To inspect experiment runs and compare metrics visually:
+
 ```bash
 mlflow ui --port 5000
 ```
 
 ### 3. Launch the Real-Time Inference API
+
 ```bash
 PYTHONPATH=. uvicorn src.api.app:app --host 0.0.0.0 --port 8000 --reload
 ```
-* **Interactive Swagger UI:** `http://localhost:8000/docs`
-* **Health Check Endpoint:** `http://localhost:8000/health`
+
+- **Interactive Swagger UI:** `http://localhost:8000/docs`
+- **Health Check Endpoint:** `http://localhost:8000/health`
 
 ### 4. Sample API Request
+
 ```bash
 curl -X POST "http://localhost:8000/predict" \
   -H "Content-Type: application/json" \
@@ -123,6 +147,7 @@ curl -X POST "http://localhost:8000/predict" \
 ```
 
 **Sample JSON Response:**
+
 ```json
 {
   "fraud_probability": 0.9412,
@@ -140,10 +165,13 @@ curl -X POST "http://localhost:8000/predict" \
 ## Docker Deployment
 
 Build and start both the FastAPI inference container and the MLflow tracking server:
+
 ```bash
 docker compose up --build -d
 ```
+
 Run the automated test suite:
+
 ```bash
 PYTHONPATH=. pytest tests/ -v
 ```
